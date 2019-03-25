@@ -302,9 +302,9 @@ void RTSSHOW::RTS_Init()
 		}
 	#endif
 	
-	//VolumeSet = eeprom_read_byte((unsigned char*)FONT_EEPROM+4);
-	//if(VolumeSet < 0 || VolumeSet > 0xFF)
-		VolumeSet = 0x20;
+	VolumeSet = eeprom_read_byte((unsigned char*)FONT_EEPROM+4);
+	if(VolumeSet < 0 || VolumeSet > 0xFF)
+		VolumeSet = 0x00;
 		
 	if(PrintMode)RTS_SndData(3, FanKeyIcon+1);	// saving mode
 	else RTS_SndData(2, FanKeyIcon+1);	// normal

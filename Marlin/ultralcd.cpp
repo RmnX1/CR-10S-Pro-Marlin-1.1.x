@@ -797,7 +797,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
   #if ENABLED(ULTIPANEL)
     lcd_refresh();
     if (clear_buttons) buttons = 0;
-    next_button_update_ms = millis() + 500;
+    next_button_update_ms = millis() + 250;
   #else
     UNUSED(clear_buttons);
   #endif

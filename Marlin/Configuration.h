@@ -90,7 +90,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 /*
    Choose bed leveling type here
@@ -848,26 +848,39 @@
 
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if(ENABLED(MachineEnder4))
-#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#else
-  #define X_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#endif
-#define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+////#if(ENABLED(MachineEnder4))
+////#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+////#else
+////  #define X_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+////#endif
+////#define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+////#define X_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+////#define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+////#define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 
-#if (DISABLED(ABL_EZABL)&& DISABLED(ABL_BLTOUCH))
-  #define Z_MIN_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
-  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the probe.
-#else
-  #define Z_MIN_ENDSTOP_INVERTING true  // set to true to invert the logic of the endstop.
-  #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the probe.
-#endif
+////#if (DISABLED(ABL_EZABL)&& DISABLED(ABL_BLTOUCH))
+////  #define Z_MIN_ENDSTOP_INVERTING false  // set to true to invert the logic of the endstop.
+////  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the probe.
+////#else
+////  #define Z_MIN_ENDSTOP_INVERTING true  // set to true to invert the logic of the endstop.
+////  #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the probe.
+////#endif
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
 //#define ENDSTOP_INTERRUPTS_FEATURE
+
+
+// Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+#define X_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_INVERTING true  // CR-10S Pro // set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING true  // CR-10S Pro // set to true to invert the logic of the endstop.
+#define Z_MAX_ENDSTOP_INVERTING true  // CR-10S Pro // set to true to invert the logic of the endstop.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the probe.
+
+
+
 
 //=============================================================================
 //============================== Movement Settings ============================
@@ -968,14 +981,26 @@
 /**
    Default Acceleration (change/s) change = mm/s
    Override with M204
-
      M204 P    Acceleration
      M204 R    Retract Acceleration
      M204 T    Travel Acceleration
 */
+
+
+
+#define DEFAULT_ACCELERATION          300    // CR-10S Pro // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  1000   // CR-10S Pro // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   300    // CR-10S Pro // X, Y, Z acceleration for travel (non printing) moves
 /**
    Default Jerk (mm/s)
    Override with M205 X Y Z E
+*/
+#define DEFAULT_XJERK                 8.0	 // CR-10S Pro
+#define DEFAULT_YJERK                 8.0	 // CR-10S Pro
+#define DEFAULT_ZJERK                 0.4
+#define DEFAULT_EJERK                 5.0
+
+/**
 
    "Jerk" specifies the minimum speed change that requires acceleration.
    When changing speed and direction, if the difference is less than the
@@ -995,7 +1020,7 @@
 
    Enable this option for a probe connected to the Z Min endstop pin.
 */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 /**
    Z_MIN_PROBE_ENDSTOP
@@ -1016,7 +1041,9 @@
    disastrous consequences. Use with caution and do your homework.
 
 */
-//#define Z_MIN_PROBE_ENDSTOP
+#define Z_MIN_PROBE_ENDSTOP
+#define Z_MIN_PROBE_PIN 12            // CR-10S Pro BLTouch
+#define PS_ON_PIN -1              // CR-10S Pro BLTouch
 
 /**
    Probe Type
@@ -1030,17 +1057,17 @@
    Use G29 repeatedly, adjusting the Z height at each point with movement commands
    or (with LCD_BED_LEVELING) the LCD controller.
 */
-#if (DISABLED(ABL_EZABL) &&DISABLED(ABL_NCSW) &&  DISABLED(ABL_BLTOUCH) )
-#define PROBE_MANUALLY
-#define MANUAL_PROBE_START_Z 0.2
-#endif
+
+//#define PROBE_MANUALLY
+//#define MANUAL_PROBE_START_Z 0.2
+
 /**
    A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
      (e.g., an inductive probe or a nozzle-based probe-switch.)
 */
-#if ENABLED(ABL_EZABL) || ENABLED(ABL_NCSW)
-  #define FIX_MOUNTED_PROBE
-#endif
+
+//#define FIX_MOUNTED_PROBE
+
 /**
    Z Servo Probe, such as an endstop switch on a rotating arm.
 */
@@ -1055,7 +1082,7 @@
 #endif
 #if ENABLED(BLTOUCH)
   #define BLTOUCH_DELAY 375   // (ms) Enable and increase if needed
-  #define BLTOUCH_FORCE_5V_MODE // For BLTouch V3.0 force 5V only mode
+//  #define BLTOUCH_FORCE_5V_MODE // For BLTouch V3.0 force 5V only mode
 #endif
 
 /**
@@ -1080,14 +1107,8 @@
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 #if ENABLED(ABL_BLTOUCH)
   #define PROBING_FANS_OFF          // Turn fans off when probing
-#if(ENABLED(MachineCR10Orig))
-  #define SOLENOID_PROBE PIN_27
-  #define SERVO0_PIN 27
-#elif(ENABLED(MachineEnder4))
-  #define SOLENOID_PROBE PIN_15
-#else
-  #define SOLENOID_PROBE PIN_11
-#endif
+//  #define SOLENOID_PROBE PIN_11
+#
 #endif
 // A sled-mounted probe like those designed by Charles Bell.
 //#define Z_PROBE_SLED
@@ -1170,7 +1191,7 @@
 #define MIN_PROBE_EDGE 10
 
 // X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 6000
+#define XY_PROBE_SPEED 8000
 
 // Speed for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
@@ -1197,11 +1218,12 @@
    Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
        But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
 */
-#define Z_CLEARANCE_DEPLOY_PROBE   5 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
-#define Z_AFTER_PROBING           5 // Z position after probing is done
+#define Z_CLEARANCE_DEPLOY_PROBE   15 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES 10 // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
+//#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1210,7 +1232,7 @@
 // Enable the M48 repeatability test to test probe accuracy
 #if (ENABLED(ABL_EZABL)|| ENABLED(ABL_BLTOUCH) || ENABLED(ABL_NCSW))
 #if(DISABLED(MachineCR10Orig))
-#define Z_MIN_PROBE_REPEATABILITY_TEST
+//#define Z_MIN_PROBE_REPEATABILITY_TEST
 #endif
 #endif
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -1280,7 +1302,8 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-
+#define INVERT_E0_DIR false
+#define INVERT_E1_DIR true		// CR-10S Pro
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -1337,6 +1360,13 @@
 #define Z_MAX_POS 400
 #endif
 
+#if (ENABLED(MachineCR10SPro))
+#define X_BED_SIZE 300
+#define Y_BED_SIZE 300
+#define Z_MAX_POS 400
+#endif
+
+
 #if ENABLED( MachineS4)
 #define X_BED_SIZE 400
 #define Y_BED_SIZE 400
@@ -1350,6 +1380,11 @@
 // The size of the print bed
 
 #else
+#if ENABLED(MachineCR10SPro)
+#define X_BED_SIZE 300
+#define Y_BED_SIZE 300
+#define Z_MAX_POS 400
+#endif
 
 #if ENABLED(MachineMini)
 #define X_BED_SIZE 300
@@ -1379,8 +1414,8 @@
 #endif
 
 #if (ENABLED(MachineCR10Std))
-#define X_BED_SIZE 315
-#define Y_BED_SIZE 310
+#define X_BED_SIZE 300
+#define Y_BED_SIZE 300
 #define Z_MAX_POS 400
 #endif
 
